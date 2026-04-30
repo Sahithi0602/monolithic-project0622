@@ -1,0 +1,18 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+
+    - name: create directory on remote server
+      file:
+        path: /root/all-setups
+        state: directory
+
+    - name: copy node exporter script
+      copy:
+        src: /root/all-setups/nodeexporter.sh
+        dest: /root/all-setups/nodeexporter.sh
+        mode: '0777'
+
+    - name: execute node exporter script
+      shell: sh /root/all-setups/nodeexporter.sh
