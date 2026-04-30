@@ -6,9 +6,9 @@ resource "aws_instance" "one" {
   count                  = 4
   ami                    = "ami-098e39bafa7e7303d"
   instance_type          = "c7i-flex.large"
-  key_name               = "project-key"
-  subnet_id              = "subnet-07292b9771570a92e"  
-  vpc_security_group_ids = ["sg-04dfda1b938b72f0e"]
+  key_name               = "mono-key"
+  subnet_id              = "subnet-07a447ecc46e5b739"  
+  vpc_security_group_ids = ["sg-0aefa9394a5bfced9"]
   associate_public_ip_address = true
   tags = {
     Name = var.instance_names[count.index]
