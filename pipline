@@ -1,0 +1,61 @@
+pipeline{
+    agent any
+    tools{
+        maven "mymaven"
+    }
+     environment {
+        AWS_ACCESS_KEY_ID = credentials('keys')
+        AWS_SECRET_ACCESS_KEY = credentials('keys')
+    }
+    stages{
+        stage("code"){
+            steps{
+              git branch: '$branch', url: 'https://github.com/Sahithi0602/jenkins-java-project.git'           
+            }
+        }
+        stage("build"){
+            steps{
+                sh "mvn compile"
+            }
+        }
+        stage("test"){
+            steps{
+                sh "mvn test"
+            }
+        }
+        stage("sonarqube"){
+            steps{
+                echo "my sonarqube is checking the code"
+            }
+        }
+        stage("gate quality"){
+            steps{
+                echo "my gate quality is good;pass the checks"
+            }
+        }
+        stage("artifact"){
+            steps{
+                sh "mvn clean package"
+            }
+        }
+        stage("s3"){
+           steps{
+             sh "aws s3 cp /var/lib/jenkins/workspace/monolithic-pipeline/target/NETFLIX-1.2.2.war s3://sahithi-monolithic-bucket-0622"        
+           }            
+        }
+        stage("ansible"){
+            steps{
+                ansiblePlaybook credentialsId: 'ansiblelogin', disableHostKeyChecking: true, installation: 'ansible', inventory: '/etc/ansible/hosts', playbook: '/etc/ansible/deploy.yaml', vaultTmpPath: ''
+            }
+        }   
+    }
+    post {
+        always {
+            echo "slack notify"
+            slackSend (
+                 channel:'#all-monolithic', message: "*${currentBuild.currentResult}:* Job ${env.JOB_NAME} \n build ${env.BUILD_NUMBER} \n More info at: ${env.BUILD_URL}"
+            )
+        }
+    }
+
+}
