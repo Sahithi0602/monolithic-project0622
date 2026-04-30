@@ -1,0 +1,11 @@
+---
+- hosts: all
+  tasks:
+    - name: copying war file to dev,test servers
+      copy: src=/var/lib/jenkins/workspace/monolithic-pipeline/target/NETFLIX-1.2.2.war dest=/root/tomcat/webapps
+~
+~
+~
+~
+~
+~
