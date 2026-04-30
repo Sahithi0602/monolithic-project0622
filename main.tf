@@ -9,6 +9,7 @@ resource "aws_instance" "one" {
   key_name               = "project-key"
   subnet_id              = "subnet-07292b9771570a92e"  
   vpc_security_group_ids = ["sg-04dfda1b938b72f0e"]
+  associate_public_ip_address = true
   tags = {
     Name = var.instance_names[count.index]
   }
